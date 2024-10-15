@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 import codecs
+from os import path
 from flask import Flask, request, jsonify
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -10,13 +11,15 @@ from marisa_trie import Trie
 
 app = Flask(__name__)
 
+BASE_DIR = path.dirname(path.abspath(__file__))
+
 limiter = Limiter(
     get_remote_address,
     app=app,
     default_limits=["100 per hour"]
 )
 
-template_file = "thai2ipa.txt"
+template_file = path.join(BASE_DIR, "thai2ipa.txt")
 with codecs.open(template_file, 'r', encoding='utf8') as f:
     lines = f.read().splitlines()
 

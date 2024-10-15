@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
-import codecs
-from os import path
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from pythainlp.tokenize import word_tokenize
 from pythainlp.transliterate import romanize
 from marisa_trie import Trie
+import codecs
+from os import path
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 BASE_DIR = path.dirname(path.abspath(__file__))
-
 limiter = Limiter(
     get_remote_address,
     app=app,

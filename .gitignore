@@ -1,0 +1,23 @@
+# Python bytecode files
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+venv/
+.venv/
+.DS_Store
+instance/
+*.sqlite3
+*.log
+*.egg
+*.egg-info/
+dist/
+build/
+pip-log.txt
+.idea/
+.vscode/
+*.marisa
+*.pyo
+*.pyd
+*.cache
+*.pytest_cache/

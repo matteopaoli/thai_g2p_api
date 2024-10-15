@@ -7,18 +7,15 @@ from flask_limiter.util import get_remote_address
 from pythainlp.tokenize import word_tokenize
 from pythainlp.transliterate import romanize
 from marisa_trie import Trie
-import os
 
 app = Flask(__name__)
 
-# Initialize Flask-Limiter to limit requests based on the client's IP address
 limiter = Limiter(
     get_remote_address,
     app=app,
-    default_limits=["100 per hour"]  # Adjust the limit as needed
+    default_limits=["100 per hour"]
 )
 
-# Load the Thai to IPA mapping data
 template_file = "thai2ipa.txt"
 with codecs.open(template_file, 'r', encoding='utf8') as f:
     lines = f.read().splitlines()
@@ -29,7 +26,6 @@ for t in lines:
 
 DEFAULT_DICT_TRIE = Trie(data.keys())
 
-# Define the G2P function
 def word_tokenize_to_g2p(text):
     wordall = word_tokenize(text, custom_dict=DEFAULT_DICT_TRIE, engine="newmm")
     result = []
@@ -42,23 +38,18 @@ def word_tokenize_to_g2p(text):
                 result.append(romanize(b, engine='pyicu'))
     return '|'.join(result)
 
-# Define a route for the API with rate limiting applied
 @app.route('/api/g2p', methods=['POST'])
-@limiter.limit("10 per minute")  # Adjust this as needed
+@limiter.limit("10 per minute")
 def g2p_api():
-    # Expecting JSON data with a "text" field
     data = request.get_json()
     thai_text = data.get('text', '')
     if not thai_text:
         return jsonify({'error': 'No text provided'}), 400
-
-    # Get the G2P result
     try:
         result = word_tokenize_to_g2p(thai_text)
         return jsonify({'result': result}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# Run the app
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run()

@@ -9,7 +9,7 @@ import codecs
 from os import path
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 BASE_DIR = path.dirname(path.abspath(__file__))
 limiter = Limiter(
